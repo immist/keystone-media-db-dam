@@ -35,24 +35,19 @@ Post.schema.pre('save', function(next) {
 	var ExifImage = require('exif').ExifImage;
 	var that = this;
 
-
 	// download image
-
 	var request = require('request'), fs = require('fs');
-
 	request({
 		url : this.image.url,
 		//make the returned body a Buffer
 		encoding : null
 	}, function(error, response, body) {
-
 		try {
 			new ExifImage({ image : body }, function (error, exifData) {
 				if (error)
 					console.log('Error: '+error.message);
 				else
 					console.log(exifData); // Do something with your data!
-
 					that.imageExifData = JSON.stringify(exifData);
 			});
 		} catch (error) {
@@ -61,10 +56,6 @@ Post.schema.pre('save', function(next) {
 		console.log(that);
     	next();
 	});
-
-    //
-	//console.log(this);
-
 });
 
 
