@@ -13,7 +13,7 @@ var Post = new keystone.List('Post', {
 
 Post.add({
 	title: { type: String, required: true },
-	state: { type: Types.Select, options: 'draft, published, archived', default: 'draft', index: true },
+	state: { type: Types.Select, options: 'draft, published, archived', default: 'published', index: true },
 	author: { type: Types.Relationship, ref: 'User', index: true },
 	publishedDate: { type: Types.Date, index: true, dependsOn: { state: 'published' } },
 	image: { type: Types.CloudinaryImage },
@@ -22,7 +22,7 @@ Post.add({
 		brief: { type: Types.Html, wysiwyg: true, height: 150 },
 	},
 	categories: { type: Types.Relationship, ref: 'PostCategory', many: true },
-	imageExifData: {type: String }
+	imageExifData: {type: String, hidden: true}
 });
 
 Post.schema.virtual('content.full').get(function() {
@@ -33,7 +33,7 @@ Post.schema.virtual('content.full').get(function() {
 Post.schema.pre('save', function(next) {
 	// populate exif metadata with exif module
 	var ExifImage = require('exif').ExifImage;
-	console.log(this.image);
+	var that = this;
 
 
 	// download image
@@ -53,19 +53,18 @@ Post.schema.pre('save', function(next) {
 				else
 					console.log(exifData); // Do something with your data!
 
-					console.log(this);
-					this.imageExifData = JSON.stringify(exifData);
+					that.imageExifData = JSON.stringify(exifData);
 			});
 		} catch (error) {
 			console.log('Error: ' + error.message);
 		}
-
+		console.log(that);
+    	next();
 	});
 
     //
 	//console.log(this);
 
-	next();
 });
 
 
