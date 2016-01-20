@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "keystone": "^0.3.16",
     "async": "^1.5.0",
-    "underscore": "^1.8.3",
-    "dotenv": "^1.1.0"
+    "dotenv": "^1.1.0",
+    "exif": "^0.4.0",
+    "keystone": "^0.3.16",
+    "request": "^2.67.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "grunt": "^0.4.4",
@@ -19,7 +21,7 @@
     "grunt-node-inspector": "^0.1.5",
     "time-grunt": "^0.3.1",
     "grunt-concurrent": "^0.5.0",
-    "grunt-nodemon": "^0.2.1", 
+    "grunt-nodemon": "^0.2.1",
     "open": "0.0.5"
   },
   "engines": {
