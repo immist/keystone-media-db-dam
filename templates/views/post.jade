@@ -28,14 +28,19 @@ block content
 						.image-wrap: img(src=data.post._.image.fit(750,450)).img-responsive
 					!= data.post.content.full
 
-			h3 EXIF Metadata
+			if data.post.exif
+				h3 EXIF Metadata
 			if data.post.exif.make
 				p Make: #{data.post.exif.make}
+			if data.post.exif.model
 				p Model: #{data.post.exif.model}
+			if data.post.exif.originalDate
 				p Original Date: #{data.post.exif.originalDate}
+			if data.post.exif.fNumber
 				p F Number: #{data.post.exif.fNumber}
+			if data.post.exif.ISO
 				p ISO: #{data.post.exif.ISO}
-				
+
 
 			p Download Original
 			p Download 640x480
