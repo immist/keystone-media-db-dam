@@ -13,6 +13,11 @@ exports = module.exports = function(req, res) {
 	locals.data = {
 		posts: []
 	};
+	locals.cloudinaryUrl = function(height, width, transformation, cloudinaryUrl){
+		imageString = cloudinaryUrl.replace('http://res.cloudinary.com/immist/image/upload/', '');
+		baseUrl = 'http://res.cloudinary.com/immist/image/upload/';
+		return baseUrl + 'c_' + transformation + ',h_' + height + ',w_'+ width + '/' + imageString;
+	};
 	
 	// Load the current post
 	view.on('init', function(next) {

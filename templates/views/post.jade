@@ -41,6 +41,11 @@ block content
 			if data.post.exif.ISO
 				p ISO: #{data.post.exif.ISO}
 
+			p Download Exif Metadata
 
-			p Download Original
-			p Download 640x480
+			if data.post.image.exists
+				h3 Download Image
+				a(href=data.post.image.url, target="_blank") Download Original
+
+
+				a(href=cloudinaryUrl(640, 480, 'fit', data.post.image.url), target="_blank") Download 640x480
