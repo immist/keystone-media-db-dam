@@ -22,7 +22,16 @@ Post.add({
 		brief: { type: Types.Html, wysiwyg: true, height: 150 },
 	},
 	categories: { type: Types.Relationship, ref: 'PostCategory', many: true },
-	imageExifData: {type: String, hidden: true}
+	exif: {
+		make: {type: String, noedit: true},
+		model: {type: String, noedit: true},
+		exposureTime: {type: Number, noedit: true},
+		originalDate: {type: String, noedit: true},
+		orientation: {type: Number, noedit: true},
+		fNumber: {type: Number, noedit: true},
+		ISO: {type: Number, noedit: true},
+		colorSpace: {type: Number, noedit: true}
+	}
 });
 
 Post.schema.virtual('content.full').get(function() {
@@ -47,8 +56,14 @@ Post.schema.pre('save', function(next) {
 				if (error)
 					console.log('Error: '+error.message);
 				else
-					console.log(exifData); // Do something with your data!
-					that.imageExifData = JSON.stringify(exifData);
+					that.exif.make = exifData.image.Make;
+					that.exif.model = exifData.image.Model;
+					that.exif.orientation = exifData.image.Orientation;
+					that.exif.exposureTime = exifData.exif.ExposureTime;
+					that.exif.originalDate = exifData.exif.DateTimeOriginal;
+					that.exif.fNumber = exifData.exif.FNumber;
+					that.exif.ISO = exifData.exif.ISO;
+					that.exif.colorSpace = exifData.exif.ColorSpace;
 			});
 		} catch (error) {
 			console.log('Error: ' + error.message);

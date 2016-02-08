@@ -3,14 +3,14 @@ extends ../layouts/default
 block content
 	.container: .row: .col-sm-10.col-sm-offset-1.col-md-8.col-md-offset-2
 		article
-			p: a(href='/blog') &larr; back to the blog
+			p: a(href='/blog') &larr; back to the overview
 			hr
 			if !data.post
 				h2 Invalid Post.
 			else
 				header
 					h1= data.post.title
-					h5 Posted 
+					h5 Uploaded
 						if data.post.publishedDate
 							| on #{data.post._.publishedDate.format('MMMM Do, YYYY')} 
 						if data.post.categories && data.post.categories.length
@@ -27,3 +27,15 @@ block content
 					if data.post.image.exists
 						.image-wrap: img(src=data.post._.image.fit(750,450)).img-responsive
 					!= data.post.content.full
+
+			h3 EXIF Metadata
+			if data.post.exif.make
+				p Make: #{data.post.exif.make}
+				p Model: #{data.post.exif.model}
+				p Original Date: #{data.post.exif.originalDate}
+				p F Number: #{data.post.exif.fNumber}
+				p ISO: #{data.post.exif.ISO}
+				
+
+			p Download Original
+			p Download 640x480
