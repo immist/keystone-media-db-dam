@@ -2,29 +2,25 @@ extends ../layouts/default
 
 mixin post(post)
 	.post(data-ks-editable=editable(user, { list: 'Post', id: post.id }))
-		h2: a(href='/blog/post/' + post.slug)= post.title
-		p.lead.text-muted Posted 
-			if post.publishedDate
-				| on #{post._.publishedDate.format('MMMM Do, YYYY')} 
-			if post.categories && post.categories.length
-				| in 
-				each cat, i in post.categories
-					a(href='/blog/' + cat.key)= cat.name
-					if i < post.categories.length - 1
-						| , 
-					else
-						|  
-			if post.author
-				| by #{post.author.name.first}
+
+
 		if post.image.exists
-			img(src=post._.image.fit(160,160)).img.pull-right
-		p!= post.content.brief
-		if post.content.extended
-			p.read-more: a(href='/blog/post/' + post.slug) Read more...
+			.col-xs-4.col-sm-4.col-md-3.gallery-image
+				a(href='/blog/post/' + post.slug)
+					img(src=post._.image.fit(300, 300)).img-rounded
+				if post.publishedDate
+				p: a(href='/blog/post/' + post.slug)= post.title
+				p= post._.publishedDate.format('Do MMM YYYY')
 
 block intro
 	.container
-		h1= data.category ? data.category.name : 'Blog'
+		h1= data.category ? 'Category: ' + data.category.name : 'Overview'
+	script.
+		window.onload = function () {
+			$('a.ks-editable-btn').attr("style",'opacity: 0; top: 0')
+			$('a.ks-editable-btn').text('Edit Image')
+		};
+
 
 block content
 	.container: .row
@@ -34,19 +30,26 @@ block content
 			else
 				if data.posts.results.length
 					if data.posts.totalPages > 1
-						h4.text-weight-normal Showing 
+						h4.text-weight-normal Showing
 							strong #{data.posts.first}
-							|  to 
+							|  to
 							strong #{data.posts.last}
-							|  of 
+							|  of
 							strong #{data.posts.total}
-							|  posts.
+							|  images.
 					else
-						h4.text-weight-normal Showing #{utils.plural(data.posts.results.length, '* post')}.
-					.blog
+						h4.text-weight-normal Showing #{utils.plural(data.posts.results.length, '* image')}.
+
+					.col-sm-12.col-md-12
+						- var i = 0
 						each post in data.posts.results
+							- if (i % 4 === 0 || i === 0) {
+								.row
+							- }
 							+post(post)
-					
+							- i++
+
+
 					if data.posts.totalPages > 1
 						ul.pagination
 							if data.posts.previous
@@ -62,10 +65,10 @@ block content
 								li.disabled: a(href='?page=' + data.posts.totalPages): span.entypo.glyphicon.glyphicon-chevron-right
 				else
 					if data.category
-						h3.text-muted There are no posts in the category #{data.category.name}.
+						h3.text-muted There are no images in the category #{data.category.name}.
 					else
-						h3.text-muted There are no posts yet.
-		
+						h3.text-muted There are no images yet.
+
 		if data.categories.length
 			.col-sm-4.col-md-3
 				h2 Categories
