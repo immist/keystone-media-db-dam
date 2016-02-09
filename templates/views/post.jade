@@ -1,6 +1,32 @@
 extends ../layouts/default
 
 block content
+
+	script.
+		function saveTextAsFile() {
+			var textToWrite = $('.metadata').text();
+			var textFileAsBlob = new Blob([textToWrite], {type: 'text/plain'});
+			var fileNameToSaveAs = 'metadata.txt';
+			var downloadLink = document.createElement("a");
+			downloadLink.download = fileNameToSaveAs;
+			downloadLink.innerHTML = "Download File";
+			if (window.webkitURL != null) {
+				// Chrome allows the link to be clicked
+				// without actually adding it to the DOM.
+				downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+			}
+			else {
+				// Firefox requires the link to be added to the DOM
+				// before it can be clicked.
+				downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+				downloadLink.onclick = destroyClickedElement;
+				downloadLink.style.display = "none";
+				document.body.appendChild(downloadLink);
+			}
+			downloadLink.click();
+		}
+
+
 	.container: .row: .col-sm-10.col-sm-offset-1.col-md-8.col-md-offset-2
 		article
 			p: a(href='/blog') &larr; back to the overview
@@ -10,7 +36,7 @@ block content
 			else
 				header
 					h1= data.post.title
-					h5 Uploaded
+					h5 Uploaded&nbsp;
 						if data.post.publishedDate
 							| on #{data.post._.publishedDate.format('MMMM Do, YYYY')} 
 						if data.post.categories && data.post.categories.length
@@ -26,26 +52,44 @@ block content
 				.post
 					if data.post.image.exists
 						.image-wrap: img(src=data.post._.image.fit(750,450)).img-responsive
-					!= data.post.content.full
 
-			if data.post.exif
-				h3 EXIF Metadata
-			if data.post.exif.make
-				p Make: #{data.post.exif.make}
-			if data.post.exif.model
-				p Model: #{data.post.exif.model}
-			if data.post.exif.originalDate
-				p Original Date: #{data.post.exif.originalDate}
-			if data.post.exif.fNumber
-				p F Number: #{data.post.exif.fNumber}
-			if data.post.exif.ISO
-				p ISO: #{data.post.exif.ISO}
+			div.metadata
+				h2 Metadata
+				h3 Image
+				if data.post.rating
+					p Rating: #{data.post.rating}
+				if data.post.content.brief
+					span Description:
+					!= data.post.content.brief
+				if data.post.categories && data.post.categories.length
+					| Categories:&nbsp;
+					each cat, cat_i in data.post.categories
+						span= cat.name
+						if cat_i < data.post.categories.length - 1
+							| ,
+						else
+							p
 
-			p Download Exif Metadata
+				if data.post.exif
+					h3 EXIF
+				if data.post.exif.make
+					p Make: #{data.post.exif.make}
+				if data.post.exif.model
+					p Model: #{data.post.exif.model}
+				if data.post.exif.originalDate
+					p Original Date: #{data.post.exif.originalDate}
+				if data.post.exif.fNumber
+					p F Number: #{data.post.exif.fNumber}
+				if data.post.exif.ISO
+					p ISO: #{data.post.exif.ISO}
+
 
 			if data.post.image.exists
 				h3 Download Image
 				a(href=data.post.image.url, target="_blank") Download Original
-
-
+				br
 				a(href=cloudinaryUrl(640, 480, 'fit', data.post.image.url), target="_blank") Download 640x480
+				br
+				a(href=cloudinaryUrl(300, 300, 'fit', data.post.image.url), target="_blank") Download 300x300
+				br
+				button(onclick="saveTextAsFile()") Download Metadata
